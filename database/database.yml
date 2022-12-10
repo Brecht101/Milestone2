@@ -1,0 +1,59 @@
+#Api version moet je op het internet opzoeken
+ apiVersion: apps/v1
+#Wat voor soort config dit is, een deployment
+ kind: Deployment
+#We geven de deployment een aantal eigenschappen mee
+ metadata:
+#We geven het natuurlijk een naam
+   name: database-deployment-bv
+#We geven aan in wat voor namespace deze deployment moet komen
+   namespace: default
+#We gaan er dieper op in wat de deployment juist moet doen
+ spec:
+#We gaan aangeven bij welke app deze deployment hoort
+   selector:
+#We geven deze een label die bij de app hoort
+     matchLabels:
+#De label opzich
+       app: database
+#Het aantal pods die aangemaakt moeten worden
+   replicas: 2
+#We geven weer aan welke label deze pods moeten hebben
+   template:
+     metadata:
+       labels:
+         app: database
+#We maken de app die in de pods moet runnen
+     spec:
+       containers:
+#We geven onze app de naam database
+         - name: database
+#De dockerhub image die we gebruiken
+           image: mariadb:10.10
+#We gebruiken poort 3306 voor onze database
+           ports:
+             - containerPort: 3306
+               name: mariadb
+#Onze database heeft data nodig, die gaan we niet iedere keer manueel in de database stoppen
+           volumeMounts:
+#We koppelen het volume mariadb-initdb aan een initdb.d zodat deze uitgevoerd word als de pod opstart
+            - mountPath: /docker-entrypoint-initdb.d
+              name: mariadb-initdb
+#We geven een aantal database variabelen mee
+           env:
+#We stellen het root password in
+             - name: MARIADB_ROOT_PASSWORD
+               value: passw1!
+#We maken een user aan
+             - name: MARIADB_USER
+               value: brecht
+             - name: MARIADB_PASSWORD
+               value: pass
+#Hier maken we een volume aan
+       volumes:
+#Volume naam
+        - name: mariadb-initdb
+#Deze bevat een configmap
+          configMap:
+#Genaamd mariadb-initdb-config
+            name: mariadb-initdb-config

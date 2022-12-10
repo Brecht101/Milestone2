@@ -1,0 +1,17 @@
+#Api version moet je op het internet opzoeken
+apiVersion: v1
+#Wat voor soort config, een configmap
+kind: ConfigMap
+#We geven de configmap een aantal eigenschappen mee
+metadata:
+#We geven het natuurlijk een naam
+  name: mariadb-initdb-config
+#We geven aan in wat voor namespace deze configmap moet komen
+  namespace: default
+#De data van onze configmap
+data:
+  initdb.sql: |
+    CREATE DATABASE milestone2;
+    USE milestone2;
+    create table user(name varchar(100));
+    insert into user values('brecht voets');

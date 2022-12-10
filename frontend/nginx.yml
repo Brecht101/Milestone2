@@ -1,0 +1,50 @@
+#Api version is online te vinden
+apiVersion: apps/v1
+#Wat voor soort config dit is, een deployment
+kind: Deployment
+#We geven de deployment een aantal eigenschappen mee
+metadata:
+#We geven het natuurlijk een naam
+  name: nginx-deployment-bv
+#We geven aan in wat voor namespace deze deployment moet komen
+  namespace: default
+#We gaan er dieper op in wat de deployment juist moet doen
+spec:
+#We gaan aangeven bij welke app deze deployment hoort
+  selector:
+#We geven deze een label die bij de app hoort
+    matchLabels:
+#De label opzich
+      app: nginx
+#Het aantal pods aangemaakt moeten worden
+  replicas: 2
+#We geven weer aan welke label deze pods moeten hebben
+  template:
+    metadata:
+      labels:
+        app: nginx
+#We maken de app die in de pods moet runnen
+    spec:
+      containers:
+#We geven onze app de naam nginx
+      - name: nginx
+#De dockerhub image die we gebruiken
+        image: nginx:latest
+        ports:
+#We gebruiken poort 80 of http voor onze webserver
+        - containerPort: 80
+          name: http
+#Onze web-server heeft een pagina nodig
+        volumeMounts:
+#We mouten een volume met de naam nginx-index-file
+            - name: nginx-index-file
+#Het pad waar de file moet komen in de pod
+              mountPath: /usr/share/nginx/html/
+#Hier maken we een volume aan
+      volumes:
+#We geven het volume de naam nginx-index-file
+      - name: nginx-index-file
+#Deze bevat een configmap
+        configMap:
+#Genaamd index-html-configmap
+          name: index-html-configmap

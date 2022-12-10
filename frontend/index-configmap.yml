@@ -1,0 +1,37 @@
+#Api version moet je online opzoeken
+apiVersion: v1
+#Wat voor soort config, een configmap
+kind: ConfigMap
+#We geven de configmap een aantal eigenschappen mee
+metadata:
+#We geven het natuurlijk een naam
+  name: index-html-configmap
+#We geven aan in wat voor namespace deze configmap moet komen
+  namespace: default
+#De data van onze configmap
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Milestone 2</title>
+    </head>
+    <body>
+    <h1><span id="user">Loading...</span> has reached milestone 2!</h1>
+
+    <script>
+      // fetch user from API
+      fetch("http://nginx.local/user")
+        .then((res) => res.json())
+        .then((data) => {
+          // get user name
+          const user = data.name;
+          // display user name
+          document.getElementById("user").innerText = user;
+        });
+    </script>
+    </body>
+    </html>

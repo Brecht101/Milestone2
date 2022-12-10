@@ -1,0 +1,35 @@
+#Api version moet je op het internet opzoeken
+apiVersion: networking.k8s.io/v1
+#We geven aan dat dit een ingress config file is
+kind: Ingress
+#We geven de ingress een aantal eigenschappen mee
+metadata:
+#We geven het natuurlijk een naam
+  name: nginx-ingress-bv
+#We geven aan in wat voor namespace deze ingress moet komen
+  namespace: default
+#We gaan er dieper op in wat de ingress juist moet doen
+spec:
+  rules:
+#We geven onze cluster een hostname waarop deze te bereiken is
+    - host: nginx.local
+      http:
+        paths:
+#Onze cluster is bereikbaar via http en wanneer je geen pad meegeeft (default)
+          - path: /
+            pathType: Prefix
+#Kom je op onze nginx web-server terecht via poort 80!
+            backend:
+              service:
+                name: nginx-service-bv
+                port:
+                  number: 80
+#We geven nog een 2e endpoint mee voor onze API, dus wanneer iemand naar nginx.local/user zou gaan
+          - path: /user
+            pathType: Prefix
+#Komt deze persoon op onze api-service terecht, via poort 8000!
+            backend:
+              service:
+                name: api-service-bv
+                port:
+                  number: 8000
